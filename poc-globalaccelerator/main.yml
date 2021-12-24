@@ -114,6 +114,10 @@ Resources:
           Statement:
             IPSetReferenceStatement:
               Arn: !GetAtt TestWafWhitelistIPSet.Arn
+              # IPSetForwardedIPConfig:
+              #   HeaderName: X-Forwarded-For
+              #   FallbackBehavior: MATCH
+              #   Position: ANY
           VisibilityConfig:
             CloudWatchMetricsEnabled: true
             SampledRequestsEnabled: true
