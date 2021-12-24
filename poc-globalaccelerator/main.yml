@@ -1,0 +1,233 @@
+Parameters:
+  Region:
+    Type: String
+    Default: us-east-1
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: test
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+Outputs:
+  TestGlobalAcceleratorDNS:
+    Value: !GetAtt TestGlobalAccelerator.DnsName
+  TestAlbDNS:
+    Value: !GetAtt TestAlb.DNSName
+  TestEc2DNS:
+    Value: !GetAtt TestEc2Instance.PublicDnsName
+Resources:
+#####
+# General Infra
+#####
+### Network
+  TestVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+  TestInternetGateway:
+    Type: AWS::EC2::InternetGateway
+  TestAttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref TestVpc
+      InternetGatewayId: !Ref TestInternetGateway
+  TestPublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TestVpc
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Sub ${Region}a
+      MapPublicIpOnLaunch: true
+  TestPrivateSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TestVpc
+      CidrBlock: 10.0.2.0/24
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: !Sub ${Region}a
+  TestPublicSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TestVpc
+      CidrBlock: 10.0.3.0/24
+      AvailabilityZone: !Sub ${Region}b
+      MapPublicIpOnLaunch: true
+  TestPrivateSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref TestVpc
+      CidrBlock: 10.0.4.0/24
+      AvailabilityZone: !Sub ${Region}b
+      MapPublicIpOnLaunch: false
+  TestPublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref TestVpc
+  TestPublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref TestPublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref TestInternetGateway
+  TestPublicSubnetRouteTableAssociationA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref TestPublicSubnetA
+      RouteTableId: !Ref TestPublicRouteTable
+  TestPublicSubnetRouteTableAssociationB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref TestPublicSubnetB
+      RouteTableId: !Ref TestPublicRouteTable
+  TestPrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref TestVpc
+  PrivateSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref TestPrivateSubnetA
+      RouteTableId: !Ref TestPrivateRouteTable
+  PrivateSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref TestPrivateSubnetB
+      RouteTableId: !Ref TestPrivateRouteTable
+#####
+# POC Infra
+#####
+### WAF
+  TestWebAcl:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      Name: TestWebAcl
+      Scope: REGIONAL
+      DefaultAction:
+        Block: {}
+      Rules:
+        - Action:
+            Allow: {}
+          Name: TestAllowWhitelist
+          Priority: 0
+          Statement:
+            IPSetReferenceStatement:
+              Arn: !GetAtt TestWafWhitelistIPSet.Arn
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            SampledRequestsEnabled: true
+            MetricName: Waf-TestAllowWhiteList
+      VisibilityConfig:
+        CloudWatchMetricsEnabled: true
+        SampledRequestsEnabled: true
+        MetricName: TestWebAcl-Global
+  TestWafWhitelistIPSet:
+    Type: AWS::WAFv2::IPSet
+    Properties: 
+      Description: IPSets allowed to perform queries
+      IPAddressVersion: IPV4      
+      Addresses: # Add the External IP Here
+        - 141.101.68.102/32
+      Scope: REGIONAL
+  TestWebACLAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties: 
+      ResourceArn: !Ref TestAlb
+      WebACLArn: !GetAtt TestWebAcl.Arn
+### Global Accelerator
+  TestGlobalAccelerator:
+    Type: AWS::GlobalAccelerator::Accelerator
+    Properties:
+      Name: TestGA
+      Enabled: false # Deploy as `false`, Change to `true` during testing and to `false` before deleting
+  TestGlobalAcceleratorListener:
+    Type: AWS::GlobalAccelerator::Listener
+    Properties:
+      AcceleratorArn: !Ref TestGlobalAccelerator
+      PortRanges:
+        - FromPort: 80
+          ToPort: 80
+      Protocol: TCP
+  TestGlobalAcceleratorEndpoint:
+    Type: AWS::GlobalAccelerator::EndpointGroup
+    Properties:
+      ListenerArn: !Ref TestGlobalAcceleratorListener
+      EndpointGroupRegion: !Ref Region
+      EndpointConfigurations:
+        - EndpointId: !Ref TestAlb
+          ClientIPPreservationEnabled: true
+### APP ALB
+  TestAlbSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access from internet
+      VpcId: !Ref TestVpc
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 80
+          ToPort: 80
+          IpProtocol: tcp
+  TestAlb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      Subnets:
+        - !Ref TestPublicSubnetA
+        - !Ref TestPublicSubnetB
+      SecurityGroups:
+        - !GetAtt 'TestAlbSG.GroupId'
+    DependsOn: TestAttachGateway
+  TestAlbListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref TestAlb
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TestTargetGroup
+      Port: 80
+      Protocol: HTTP
+  TestTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 15
+      HealthyThresholdCount: 5
+      Matcher:
+        HttpCode: '200'
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref TestVpc
+      TargetType: instance
+      Targets:
+      - Id: !Ref TestEc2Instance
+        Port: 80
+### APP
+  TestEc2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAmiId 
+      InstanceType: t3.nano
+      SecurityGroupIds:
+        - !Ref TestEc2SG
+      SubnetId: !Ref TestPublicSubnetA
+      KeyName: !Ref KeyName
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y httpd
+          systemctl start httpd
+          systemctl enable httpd
+          echo "It worked! $(hostname -f)" > /var/www/html/index.html
+  TestEc2SG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access from ALB
+      VpcId: !Ref TestVpc
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: !GetAtt 'TestAlbSG.GroupId'
+          FromPort: 80
+          ToPort: 80
+          IpProtocol: tcp
