@@ -1,6 +1,6 @@
 locals {
   rds_sg_name     = "${var.project_name}-rds-sg"
-  cidrs_allowed       = ["212.24.219.214/32","83.222.50.35/32"]
+  cidrs_allowed       = ["212.24.219.214/32","83.222.50.35/32","52.17.87.56/32"]
 }
 
 #########
@@ -29,7 +29,7 @@ resource "aws_security_group_rule" "RDS_ingress_https" {
   security_group_id        = aws_security_group.mysql_rds.id
   description              = "Allow to communicate with the RDS cluster."
   type                     = "ingress"
-  from_port                = 3036
+  from_port                = 3306
   to_port                  = 3306
   protocol                 = "tcp"
   cidr_blocks              = local.cidrs_allowed

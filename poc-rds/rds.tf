@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "db_subnet" {
 	name 					= "${var.project_name}-rds-subnet"
-	subnet_ids		= aws_subnet.private.*.id
+	subnet_ids		= aws_subnet.public.*.id
 }
 
 resource "aws_rds_cluster" "mysql_rds_cluster" {
@@ -17,7 +17,7 @@ resource "aws_rds_cluster" "mysql_rds_cluster" {
 	db_subnet_group_name	  = aws_db_subnet_group.db_subnet.name
 	storage_encrypted		    = true
 	skip_final_snapshot		  = true
-	deletion_protection		  = true
+	deletion_protection		  = false
 
 	tags = {
 		Name = "${var.project_name}-rds"
@@ -31,4 +31,5 @@ resource "aws_rds_cluster_instance" "mysql_rds_cluster_instance" {
 	instance_class			= "db.t3.small"
 	engine 					    = aws_rds_cluster.mysql_rds_cluster.engine
 	engine_version			= aws_rds_cluster.mysql_rds_cluster.engine_version
+	publicly_accessible = true
 }

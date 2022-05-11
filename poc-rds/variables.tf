@@ -10,7 +10,8 @@ variable "azs" {
   type = list(string)
   default		= [
     "a",
-    "b"
+    "b",
+    "c"
   ]
 }
 variable "hosted_zone_id" {

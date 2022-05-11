@@ -1,8 +1,8 @@
 locals {
   az_names        = [for az in var.azs : "${data.aws_region.current.name}${az}"]
-  vpc_cidr        = "10.2.108.0/22"
-  private_subnets = ["10.2.108.0/24","10.2.109.0/24"]
-  public_subnets  = ["10.2.110.0/24","10.2.111.0/24"]
+  vpc_cidr        = "10.2.16.0/20"
+  private_subnets = ["10.2.16.0/24","10.2.17.0/24","10.2.18.0/24"]
+  public_subnets  = ["10.2.19.0/24","10.2.20.0/24","10.2.21.0/24"]
 }
 
 data "aws_region" "current" {}
@@ -37,8 +37,7 @@ resource "aws_subnet" "private" {
   cidr_block        = local.private_subnets[count.index]
   availability_zone = local.az_names[count.index]
   tags = {
-    "Name"                            = "${var.project_name}-private-az${var.azs[count.index]}",
-    "kubernetes.io/role/internal-elb" = "1"
+    "Name" = "${var.project_name}-private-az${var.azs[count.index]}",
   }
 }
 
@@ -72,8 +71,7 @@ resource "aws_subnet" "public" {
   availability_zone       = local.az_names[count.index]
   map_public_ip_on_launch = true
   tags = {
-    "Name"                   = "${var.project_name}-public-az${var.azs[count.index]}",
-    "kubernetes.io/role/elb" = "1"
+    "Name"  = "${var.project_name}-public-az${var.azs[count.index]}",
   }
 }
 
