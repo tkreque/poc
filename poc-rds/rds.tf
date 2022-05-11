@@ -8,7 +8,7 @@ resource "aws_rds_cluster" "mysql_rds_cluster" {
 	engine					        = "aurora-mysql"
 	engine_version			    = "5.7.mysql_aurora.2.07.2"
 	availability_zones	    = local.az_names
-	database_name			      = "wordpress"
+	# database_name			      = "mydbname"
 	master_username			    = "myrootuser"
 	master_password			    = "myrootpassword"
 	backup_retention_period = 7
