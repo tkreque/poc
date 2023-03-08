@@ -4,7 +4,7 @@ provider "aws" {
   default_tags {
     tags = {
       environment = "poc",
-      created_on = "2022-05-11"
+      created_on = "2023-03-09"
     }
   }
 }
