@@ -25,12 +25,32 @@ resource "aws_security_group_rule" "RDS_egress_internet" {
   protocol          = "-1"
 }
 
-resource "aws_security_group_rule" "RDS_ingress_https" {
+resource "aws_security_group_rule" "RDS_ingress_https_MYSQL" {
   security_group_id        = aws_security_group.mysql_rds.id
   description              = "Allow to communicate with the RDS cluster."
   type                     = "ingress"
   from_port                = 3306
   to_port                  = 3306
+  protocol                 = "tcp"
+  cidr_blocks              = local.cidrs_allowed
+}
+
+resource "aws_security_group_rule" "RDS_ingress_https_ORACLE" {
+  security_group_id        = aws_security_group.mysql_rds.id
+  description              = "Allow to communicate with the RDS cluster."
+  type                     = "ingress"
+  from_port                = 1521
+  to_port                  = 1521
+  protocol                 = "tcp"
+  cidr_blocks              = local.cidrs_allowed
+}
+
+resource "aws_security_group_rule" "RDS_ingress_https_MSSQL" {
+  security_group_id        = aws_security_group.mysql_rds.id
+  description              = "Allow to communicate with the RDS cluster."
+  type                     = "ingress"
+  from_port                = 1433
+  to_port                  = 1433
   protocol                 = "tcp"
   cidr_blocks              = local.cidrs_allowed
 }
