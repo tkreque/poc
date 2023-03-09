@@ -1,7 +1,8 @@
 resource "aws_db_instance" "rds-demo02" {
   engine               = "sqlserver-se"
   engine_version       = "15.00.4236.7.v1"
-  instance_class       = "db.t3.medium"
+  instance_class       = "db.t3.xlarge"
+  license_model        = "license-included"
 
   identifier           = "${var.project_name}-rds-demo02"
   username             = "myrootuser"
