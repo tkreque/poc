@@ -1,5 +1,5 @@
 resource "aws_db_instance" "rds-demo02" {
-  engine               = "sqlserver-ex"
+  engine               = "sqlserver-se"
   engine_version       = "15.00.4236.7.v1"
   instance_class       = "db.t3.medium"
 
