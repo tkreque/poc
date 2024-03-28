@@ -13,7 +13,7 @@ terraform {
   required_version = ">= 1.0.0"
   backend "s3" {
     profile = "tf-projects"
-    bucket  = "tf-states.tkreque.eu"    
+    bucket  = "tf-states.tkreque.com"
     key     = "eu/tkreque/rds/terraform.state"    
     region  = "eu-central-1"
   }
