@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      - echo "Installation phase - $ENVIRONMENT"
+      - sleep 60
+  pre_build:
+    commands:
+      - echo "Pre-build phase"
+       - sleep 60
+  build:
+    commands:
+      - echo "Build phase"
+      - sleep 120
+  post_build:
+    commands:
+      - echo "Post-build phase"
+      - sleep 60
