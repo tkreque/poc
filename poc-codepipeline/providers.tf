@@ -22,6 +22,18 @@ provider "aws" {
 }
 
 provider "aws" {
+  alias   = "test"
+  region  = "eu-central-1"
+  profile = "<my_test_account_profile>"
+  default_tags {
+    tags = {
+      environment = "poc",
+      created_on  = "2024-09"
+    }
+  }
+}
+
+provider "aws" {
   alias   = "prod"
   region  = "eu-central-1"
   profile = "<my_prod_account_profile>"
