@@ -1,4 +1,5 @@
 **/*.key
 **/.terraform/**
 **/.terraform.lock.hcl
+**/.terragrunt-cache/**
 .idea/*
