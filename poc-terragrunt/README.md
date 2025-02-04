@@ -15,6 +15,10 @@ terragrunt
 From the root folder:
 
 ```
+terragrunt run-all <plan|apply|destroy>
+terragrunt run-all <plan|apply|destroy> --terragrunt-exclude-dir="**/db/**"
+terragrunt run-all <plan|apply|destroy> --terragrunt-exclude-dir="**/db/**" --terragrunt-exclude-dir="**/test/**"
+
 terragrunt run-all <plan|apply|destroy> --terragrunt-working-dir="./live/dev/" 
 terragrunt run-all <plan|apply|destroy> --terragrunt-working-dir="./live/dev/aws"
 terragrunt run-all <plan|apply|destroy> --terragrunt-working-dir="./live/dev" --terragrunt-exclude-dir="**/db/**"
