@@ -2,14 +2,18 @@ variable "configs" {
   type = any
 }
 
-variable  "vpc_id" {
+variable "vpc_id" {
   type = string
 }
 
-variable  "vpc_subnets" {
+variable "vpc_subnets" {
   type = list(string)
 }
 
 variable "rds_security_group_ids" {
   type = list(string)
+}
+
+variable "kms_key_arn" {
+  type = string
 }

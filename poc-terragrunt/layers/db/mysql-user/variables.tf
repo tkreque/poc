@@ -8,7 +8,7 @@ variable "database_users" {
 
 variable "database_root" {
   type = object({
-    user = string
+    user     = string
     password = string
   })
 }

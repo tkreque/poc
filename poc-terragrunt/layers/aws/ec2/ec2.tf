@@ -51,7 +51,7 @@ resource "aws_instance" "ec2" {
     volume_type           = each.value.storage.type
     delete_on_termination = each.value.storage.delete_on_termination
     encrypted             = true
-    kms_key_id            = aws_kms_key.ec2.arn
+    kms_key_id            = var.kms_key_arn
     tags = merge(
       data.aws_default_tags.aws_tags.tags,
       {
@@ -64,7 +64,7 @@ resource "aws_instance" "ec2" {
     data.aws_default_tags.aws_tags.tags,
     {
       Name = "${var.configs.ec2_name_prefix}-${each.key}",
-      App = "${var.configs.ec2_name_prefix}-${each.key}"
+      App  = "${var.configs.ec2_name_prefix}-${each.key}"
     }
   )
 }

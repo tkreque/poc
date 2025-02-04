@@ -30,8 +30,8 @@ locals {
 
   ## EC2
   ec2_name_prefix           = "${local.resource_prefix}-ec2"
-  ec2_role_name             = "${local.project_name}-ec2-role"
-  ec2_instance_profile_name = "${local.project_name}-ec2-instance-profile"
+  ec2_role_name             = "${local.resource_prefix}-ec2-role"
+  ec2_instance_profile_name = "${local.resource_prefix}-ec2-instance-profile"
 
   ## RDS
   rds_name_prefix          = "${local.resource_prefix}-db"
@@ -102,7 +102,8 @@ terraform {
       version = "3.6.3"
     }
     mysql = {
-      source = "terraform-providers/mysql"
+      source = "petoju/mysql"
+      version = "3.0.69"
     }
   }
 }

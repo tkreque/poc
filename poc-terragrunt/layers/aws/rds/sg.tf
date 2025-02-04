@@ -19,12 +19,12 @@ resource "aws_security_group_rule" "RDS_egress_internet" {
 }
 
 resource "aws_security_group_rule" "RDS_ingress" {
-  for_each                 = { for index, rds in var.configs.env_vars.rds : rds.name => rds }
-  security_group_id        = aws_security_group.rds[each.key].id
-  description              = "Allow to communicate with the RDS."
-  type                     = "ingress"
-  from_port                = each.value.access.port
-  to_port                  = each.value.access.port
-  protocol                 = "tcp"
-  cidr_blocks              = each.value.access.allow
+  for_each          = { for index, rds in var.configs.env_vars.rds : rds.name => rds }
+  security_group_id = aws_security_group.rds[each.key].id
+  description       = "Allow to communicate with the RDS."
+  type              = "ingress"
+  from_port         = each.value.access.port
+  to_port           = each.value.access.port
+  protocol          = "tcp"
+  cidr_blocks       = each.value.access.allow
 }
