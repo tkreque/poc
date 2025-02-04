@@ -5,7 +5,7 @@ resource "aws_db_instance" "rds" {
   instance_class = each.value.class
 
   identifier = "${var.configs.rds_name_prefix}-${each.key}"
-  db_name    = each.value.default_schema
+  db_name    = "default_${each.key}"
   username   = each.value.authentication.root.user
   password   = each.value.authentication.root.password
 
