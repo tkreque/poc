@@ -24,7 +24,7 @@ terragrunt run-all <plan|apply|destroy> --terragrunt-working-dir="./live/dev/aws
 terragrunt run-all <plan|apply|destroy> --terragrunt-working-dir="./live/dev" --terragrunt-exclude-dir="**/db/**"
 terragrunt run-all <plan|apply|destroy> --terragrunt-working-dir="./live/" --terragrunt-exclude-dir="**/db/**"
 
-terragrunt <plan|apply|destroy> --terragrunt-working-dir="./live/dev/ec2"
+terragrunt <plan|apply|destroy> --terragrunt-working-dir="./live/dev/aws/ec2"
 ```
 
 From the exact folder
