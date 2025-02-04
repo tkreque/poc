@@ -81,7 +81,7 @@ EOF
 }
 
 generate "versions" {
-  path = "versions.tf"
+  path = "versions_override.tf"
 
   if_exists = "overwrite_terragrunt"
 
@@ -96,14 +96,6 @@ terraform {
     tls = {
       source  = "hashicorp/tls"
       version = "3.1.0"
-    }
-    random = {
-      source = "hashicorp/random"
-      version = "3.6.3"
-    }
-    mysql = {
-      source = "petoju/mysql"
-      version = "3.0.69"
     }
   }
 }
