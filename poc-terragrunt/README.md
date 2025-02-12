@@ -73,6 +73,8 @@ This is the basic hierarchy that Terragrunt will apply their configurations.
 Exemple for the AWS RDS:
 
 ```mermaid
+---
+title: Terragrunt Hierarchy
 config:
   maxEdges: 600
 ---
