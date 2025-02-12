@@ -73,6 +73,9 @@ This is the basic hierarchy that Terragrunt will apply their configurations.
 Exemple for the AWS RDS:
 
 ```mermaid
+config:
+  maxEdges: 600
+---
 graph TD;
   B["live/_global/aws/rds.hcl"] --> A["live/environment/aws/rds/terragrunt.hcl"];
   C["live/root.hcl"] --> A;
