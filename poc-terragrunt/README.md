@@ -83,7 +83,7 @@ graph TD;
   E["live/&lt;env&gt;/aws/kms"] --> B;
   F["layer/aws/rds"] --> B;
   G["live/&lt;env&gt;/env.yml"] --> C;
-  classDef fix font-size:16px;
+  classDef fix font-size:14px;
 ```
 
 ## Commands
