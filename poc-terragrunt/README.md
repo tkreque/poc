@@ -75,16 +75,15 @@ Exemple for the AWS RDS:
 ```mermaid
 ---
 title: Terragrunt Hierarchy
-config:
-  width: 700
 ---
 graph TD;
-  B["live/_global/aws/rds.hcl"] --> A(["live/&lt;env&gt;/aws/rds/terragrunt.hcl"]);
+  B["live/_global/aws/rds.hcl"] --> A(["live/&lt;env&gt;/aws/rds/terragrunt.hcl"]):::wide;
   C["live/root.hcl"] --> A;
   D["live/&lt;env&gt;/aws/vpc"] --> B;
   E["live/&lt;env&gt;/aws/kms"] --> B;
   F["layer/aws/rds"] --> B;
   G["live/&lt;env&gt;/env.yml"] --> C;
+  classDef wide padding:100px
 ```
 
 ## Commands
