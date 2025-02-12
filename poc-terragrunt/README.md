@@ -76,7 +76,7 @@ Exemple for the AWS RDS:
 ---
 title: Terragrunt Hierarchy
 config:
-  width: 400
+  width: 700
 ---
 graph TD;
   B["live/_global/aws/rds.hcl"] --> A(["live/&lt;env&gt;/aws/rds/terragrunt.hcl"]);
