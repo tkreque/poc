@@ -79,7 +79,7 @@ config:
   maxEdges: 600
 ---
 graph TD;
-  B["live/_global/aws/rds.hcl"] --> A["live/environment/aws/rds/terragrunt.hcl"];
+  B["live/_global/aws/rds.hcl"] --> A(("live/environment/aws/rds/terragrunt.hcl"));
   C["live/root.hcl"] --> A;
   D["live/environment/aws/vpc"] --> B;
   E["live/environment/aws/kms"] --> B;
