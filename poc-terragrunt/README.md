@@ -74,8 +74,8 @@ Exemple for the AWS RDS:
 
 ```mermaid
 graph TD;
-  A["live/environment/aws/rds/terragrunt.hcl"] <-- B["live/_global/aws/rds.hcl"];
-  A <-- C["live/root.hcl"];
+  B["live/_global/aws/rds.hcl"] --> A["live/environment/aws/rds/terragrunt.hcl"];
+  C["live/root.hcl"] --> A;
   D["live/environment/aws/vpc"] --> B;
   E["live/environment/aws/kms"] --> B;
   F["layer/aws/rds"] --> B;
