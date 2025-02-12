@@ -77,13 +77,13 @@ Exemple for the AWS RDS:
 title: Terragrunt Hierarchy
 ---
 graph TD;
-  B["live/_global/aws/rds.hcl"] --> A(["live/&lt;env&gt;/aws/rds/terragrunt.hcl"]):::wide;
+  B["live/_global/aws/rds.hcl"] --> A(["live/&lt;env&gt;/aws/rds/terragrunt.hcl"]):::fix;
   C["live/root.hcl"] --> A;
   D["live/&lt;env&gt;/aws/vpc"] --> B;
   E["live/&lt;env&gt;/aws/kms"] --> B;
   F["layer/aws/rds"] --> B;
   G["live/&lt;env&gt;/env.yml"] --> C;
-  classDef wide line-height:20px
+  classDef fix font-size:11px;
 ```
 
 ## Commands
