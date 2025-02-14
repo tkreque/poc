@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: ${application}
+  name: ${name}
+  namespace: ${namespace}
+spec:
+  replicas: ${configs.replicas}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ${application}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ${application}
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: ${configmap}
+            - secretRef:
+                name: ${secret}
+          image: ${configs.image}
+          args:
+            - "-text=My ${environment} App"
+          resources:
+            limits:
+              cpu: '${configs.limits.cpu}'
+              memory: '${configs.limits.memory}'
+            requests:
+              cpu: '${configs.requests.cpu}'
+              memory: '${configs.requests.memory}'
+          name: 'container-${name}'
+          ports:
+            - containerPort: ${configs.ports.internal.http}
+              name: http
+              protocol: TCP
+            - containerPort: ${configs.ports.internal.https}
+              name: https
+              protocol: TCP
+      serviceAccountName: ${serviceaccount}
+
