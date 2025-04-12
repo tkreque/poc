@@ -49,7 +49,7 @@ remote_state {
   config = {
     profile = local.account_profile
     bucket  = "tf-states.tkreque.com"
-    key     = "${local.project_name}/${path_relative_to_include()}/terraform.tfstate"
+    key     = "com/tkreque/${local.project_name}/${path_relative_to_include()}/terraform.tfstate"
     region  = local.aws_region
   }
 

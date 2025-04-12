@@ -14,7 +14,7 @@ terraform {
   backend "s3" {
     profile = "tf-projects"
     bucket  = "tf-states.tkreque.com"
-    key     = "eu/tkreque/rds/terraform.state"    
+    key     = "com/tkreque/rds/terraform.state"    
     region  = "eu-central-1"
   }
   required_providers {
